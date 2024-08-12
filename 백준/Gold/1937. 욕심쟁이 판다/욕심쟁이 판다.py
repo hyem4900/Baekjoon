@@ -1,30 +1,26 @@
 import sys
-input = sys.stdin.readline
-sys.setrecursionlimit(10**5)
-
+sys.setrecursionlimit(10000)
+input=sys.stdin.readline
 def func(i, j):
-    global ans
-    if dp[i][j] != 1:
-        return dp[i][j]
-    flag = 1
+    mx = 1
     for di, dj in dir:
-        ni = i + di
-        nj = j + dj
+        ni, nj = i + di, j + dj
         if ni in range(N) and nj in range(N) and arr[ni][nj] > arr[i][j]:
-            flag = 0
-            dp[i][j] = max(dp[i][j], func(ni, nj) + 1)
-    if flag:
-        return 1
-    ans = max(ans, dp[i][j])
-    return dp[i][j]
+            if not dp[ni][nj]:
+                mx = max(mx, func(ni, nj) + 1)
+            else:
+                mx = max(mx, dp[ni][nj] + 1)
+    dp[i][j] = mx
+    return mx
 
 N = int(input()) # 대나무 숲 크기
 arr = [list(map(int,input().split())) for _ in range(N)]
 dir = [(1,0),(0,1),(-1,0),(0,-1)]
-dp = [[1]*N for _ in range(N)]
-ans = 1
+dp = [[0]*N for _ in range(N)]
+
 for i in range(N):
     for j in range(N):
-        func(i, j)
+        if not dp[i][j]:
+            func(i, j)
 
-print(ans)
+print(max(map(max, dp)))
