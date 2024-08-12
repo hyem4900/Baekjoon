@@ -1,26 +1,32 @@
 import sys
-sys.setrecursionlimit(10000)
-input=sys.stdin.readline
-def func(i, j):
-    mx = 1
-    for di, dj in dir:
-        ni, nj = i + di, j + dj
-        if ni in range(N) and nj in range(N) and arr[ni][nj] > arr[i][j]:
-            if not dp[ni][nj]:
-                mx = max(mx, func(ni, nj) + 1)
+sys.setrecursionlimit(10_000)
+
+input = sys.stdin.readline
+#printf = sys.stdout.write
+
+drdc = ((-1, 0), (0, 1), (1, 0), (0, -1))
+
+def dfs(r, c):
+    global N, board, visited
+    ans = 0
+    v = board[r][c]
+    ans = 1
+    for dr, dc in drdc:
+        if 0<=(nr:=r+dr)<N and 0<=(nc:=c+dc)<N and board[nr][nc]>v:
+            if visited[nr][nc]:
+                ans =  max(ans, 1+visited[nr][nc])
             else:
-                mx = max(mx, dp[ni][nj] + 1)
-    dp[i][j] = mx
-    return mx
+                ans = max(ans, 1+dfs(nr, nc))
+    visited[r][c] = ans
+    return ans
 
-N = int(input()) # 대나무 숲 크기
-arr = [list(map(int,input().split())) for _ in range(N)]
-dir = [(1,0),(0,1),(-1,0),(0,-1)]
-dp = [[0]*N for _ in range(N)]
+N = int(input())
+board = [list(map(int, input().split())) for _ in range(N)]
+visited = [[0]*(N) for _ in range(N)]
 
-for i in range(N):
-    for j in range(N):
-        if not dp[i][j]:
-            func(i, j)
-
-print(max(map(max, dp)))
+for rs in range(N):
+    for cs in range(N):
+        if visited[rs][cs]:
+            continue
+        dfs(rs, cs)
+print(max(map(max, visited)))
